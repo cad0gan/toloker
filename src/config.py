@@ -16,3 +16,7 @@ class Config(metaclass=Singleton):
     @property
     def password(self) -> str:
         return self._config['password']
+
+    @property
+    def notify(self):
+        return self._config.get('notify')

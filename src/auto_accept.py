@@ -1,6 +1,6 @@
 import sys
 from pytoloka import Toloka
-from notify import notify
+from notify import Notify
 
 
 class AutoAccept:
@@ -8,6 +8,7 @@ class AutoAccept:
         self._toloka = toloka
 
     async def __call__(self, *args, **kwargs) -> None:
+
         count = 0
 
         while True:
@@ -31,4 +32,4 @@ class AutoAccept:
                             result = await self._toloka.assign_task(pool_id, task['refUuid'])
                         if result.get('id'):
                             print('Activated task: {}'.format(title))
-                            notify(subtitle='Activated task', message=title)
+                            Notify()(subtitle='Activated task', message=title)
