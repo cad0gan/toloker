@@ -1,5 +1,6 @@
 import sys
 from pytoloka import Toloka
+from notify import notify
 
 
 class AutoAccept:
@@ -16,15 +17,18 @@ class AutoAccept:
             sys.stdout.write('\033[F')
             sys.stdout.write('\033[K')
             for task in toloka_tasks:
+                title = task['title']
+
                 if task['projectMetaInfo'].get('bookmarked'):
                     if task['pools'][0].get('activeAssignments'):
-                        print('Active task: {}'.format(task['title']))
+                        print('Active task: {}'.format(title))
                     else:
                         pool_id = task['pools'][0]['id']
-                        print('Activating task: {}'.format(task['title']))
+                        print('Activating task: {}'.format(title))
 
                         result = await self._toloka.assign_task(pool_id, task['refUuid'])
                         if not result.get('id'):
                             result = await self._toloka.assign_task(pool_id, task['refUuid'])
                         if result.get('id'):
-                            print('Activated task: {}'.format(task['title']))
+                            print('Activated task: {}'.format(title))
+                            notify(subtitle='Activated task', message=title)
