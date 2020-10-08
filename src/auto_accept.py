@@ -25,6 +25,6 @@ class AutoAccept:
 
                         result = await self._toloka.assign_task(pool_id, task['refUuid'])
                         if not result.get('id'):
-                            res = await self._toloka.assign_task(pool_id, task['refUuid'])
+                            result = await self._toloka.assign_task(pool_id, task['refUuid'])
                         if result.get('id'):
                             print('Activated task: {}'.format(task['title']))
