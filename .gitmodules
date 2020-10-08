@@ -1,0 +1,3 @@
+[submodule "pytoloka"]
+	path = pytoloka
+	url = git@github.com:cad0gan/pytoloka.git
