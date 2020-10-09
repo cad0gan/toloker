@@ -23,10 +23,12 @@ class Window:
         self._screen = curses.initscr()
         curses.cbreak()
         curses.noecho()
-        curses.start_color()
-        if curses.can_change_color():
-            curses.use_default_colors()
         curses.curs_set(False)
+        try:
+            curses.start_color()
+            curses.use_default_colors()
+        except curses.error:
+            pass
         self._screen.clear()
         self._stdout.set()
         signal.signal(signal.SIGINT, lambda signum, frame: None)
