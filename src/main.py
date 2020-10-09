@@ -8,19 +8,14 @@ VERSION = '0.0.1'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', nargs='?', help='[accept]')
+    # parser.add_argument('action', nargs='?', help='[accept]')
     parser.add_argument('-v', '--version', action='store_true', help='show version and exit')
     args = parser.parse_args()
 
-    if args.action:
-        if args.action == 'accept':
-            config = Config()
-            toloka = Toloka()
-            if asyncio.run(toloka.login(config.username, config.password)):
-                asyncio.run(AutoAccept(toloka)())
-        else:
-            print(f'Unknown action: {args.action}')
-            exit(1)
+    if args.version:
+        print(VERSION)
     else:
-        if args.version:
-            print(VERSION)
+        config = Config()
+        toloka = Toloka()
+        if asyncio.run(toloka.login(config.username, config.password)):
+            asyncio.run(AutoAccept(toloka)())
