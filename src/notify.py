@@ -1,4 +1,4 @@
-import os
+import subprocess
 from config import Config
 from singleton import Singleton
 
@@ -13,7 +13,8 @@ class Notify(metaclass=Singleton):
         title = f'-title "{title}"'
         subtitle = f'-subtitle "{subtitle}"'
         message = f'-message "{message}"'
-        os.system(f'terminal-notifier {title} {subtitle} {message} -sound default')
+        cmd = f'terminal-notifier {title} {subtitle} {message} -sound default'
+        subprocess.call(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     def __call__(self, title: str = 'toloker', subtitle: str = '', message: str = ''):
         if not message:
