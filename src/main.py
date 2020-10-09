@@ -3,6 +3,7 @@ import argparse
 from pytoloka import Toloka
 from config import Config
 from window import Window
+from auto_accept import AutoAccept
 
 VERSION = '0.0.1'
 
@@ -18,4 +19,4 @@ if __name__ == '__main__':
         config = Config()
         toloka = Toloka()
         if asyncio.run(toloka.login(config.username, config.password)):
-            Window(toloka)()
+            Window(AutoAccept(toloka))()

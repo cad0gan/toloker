@@ -1,14 +1,23 @@
 import curses
+import signal
 import asyncio
+from threading import Thread
 from window.stdout import StdOut
-from auto_accept import AutoAccept
 
 
 class Window:
-    def __init__(self, toloka):
-        self._toloka = toloka
+    def __init__(self, worker):
+        self._worker = worker
         self._screen = None
         self._stdout = StdOut()
+        self._thread = Thread(target=self._handle_keypress)
+
+    def _handle_keypress(self):
+        while True:
+            ch = self._screen.getch()
+            if ch == ord('q'):
+                self._worker.exit()
+                break
 
     def __call__(self):
         self._screen = curses.initscr()
@@ -20,8 +29,11 @@ class Window:
         curses.curs_set(False)
         self._screen.clear()
         self._stdout.set()
-        asyncio.run(AutoAccept(self._toloka)())
+        signal.signal(signal.SIGINT, lambda signum, frame: None)
+        self._thread.start()
+        asyncio.run(self._worker())
 
     def __del__(self):
+        self._thread.join()
         curses.endwin()
         self._stdout.unset()

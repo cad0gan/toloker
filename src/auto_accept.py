@@ -5,13 +5,20 @@ from notify import Notify
 
 class AutoAccept:
     def __init__(self, toloka: Toloka) -> None:
-        self._toloka = toloka
+        self._toloka: Toloka = toloka
+        self._exit: bool = False
+
+    def exit(self) -> None:
+        if not self._exit:
+            print('Exiting...')
+            self._exit = True
 
     async def __call__(self, *args, **kwargs) -> None:
-
         count = 0
-
         while True:
+            if self._exit:
+                break
+
             toloka_tasks = await self._toloka.get_tasks()
             count += 1
             print(f'Requests: {count}')
