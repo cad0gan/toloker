@@ -18,6 +18,8 @@ class Window:
             if ch == ord('q'):
                 self._worker.exit()
                 break
+            elif ch == ord('s'):
+                self._worker.pause()
 
     def __call__(self):
         self._screen = curses.initscr()

@@ -9,17 +9,30 @@ class AutoAccept:
     def __init__(self, toloka: Toloka) -> None:
         self._toloka: Toloka = toloka
         self._exit: bool = False
+        self._pause: int = 0
 
     def exit(self) -> None:
         if not self._exit:
             print('Exiting...')
             self._exit = True
 
+    def pause(self) -> None:
+        if self._pause == 0:
+            print('Pausing...')
+            self._pause = 1
+        elif self._pause == 2:
+            print('Unpause')
+            self._pause = False
+
     async def __call__(self, *args, **kwargs) -> None:
         count = 0
         while True:
             if self._exit:
                 break
+            if self._pause == 2:
+                await asyncio.sleep(1)
+                continue
+
             try:
                 toloka_tasks = await self._toloka.get_tasks()
                 count += 1
@@ -44,5 +57,8 @@ class AutoAccept:
                                 Notify()(subtitle='The task was activated', message=title)
                             else:
                                 print(f'Can\'t activate a task: {title}')
+                if self._pause == 1:
+                    print('Pause')
+                    self._pause = 2
             except HttpError:
                 await asyncio.sleep(1)
