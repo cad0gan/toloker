@@ -47,16 +47,20 @@ class AutoAccept:
                         #     print('Active task: {}'.format(title))
                         if not task['pools'][0].get('activeAssignments'):
                             pool_id = task['pools'][0]['id']
+                            ref_uuid = task['refUuid']
 
                             print(f'Activating the task: {title}')
-                            result = await self._toloka.assign_task(pool_id, task['refUuid'])
-                            if not result.get('id'):
-                                result = await self._toloka.assign_task(pool_id, task['refUuid'])
-                            if result.get('id'):
-                                print(f'A task was activated: {title}')
+                            result = await self._toloka.assign_task(pool_id, ref_uuid)
+                            code = result.get('code')
+                            if code and code == 'CSRF_EXCEPTION':
+                                result = await self._toloka.assign_task(pool_id, ref_uuid)
+                                code = result.get('code')
+                            if not code:
+                                print(f'A task is activated: {title}')
                                 Notify()(subtitle='The task was activated', message=title)
                             else:
-                                print(f'Can\'t activate a task: {title}')
+                                message = result.get('message')
+                                print(f'Can\'t activate a task: {title}. {message}.')
                 if self._pause == 1:
                     print('Pause')
                     self._pause = 2
