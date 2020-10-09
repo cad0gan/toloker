@@ -18,10 +18,9 @@ class AutoAccept:
     async def __call__(self, *args, **kwargs) -> None:
         count = 0
         while True:
+            if self._exit:
+                break
             try:
-                if self._exit:
-                    break
-
                 toloka_tasks = await self._toloka.get_tasks()
                 count += 1
                 print(f'Requests: {count}')
@@ -31,17 +30,19 @@ class AutoAccept:
                     title = task['title']
 
                     if task['projectMetaInfo'].get('bookmarked'):
-                        if task['pools'][0].get('activeAssignments'):
-                            print('Active task: {}'.format(title))
-                        else:
+                        # if task['pools'][0].get('activeAssignments'):
+                        #     print('Active task: {}'.format(title))
+                        if not task['pools'][0].get('activeAssignments'):
                             pool_id = task['pools'][0]['id']
-                            print('Activating task: {}'.format(title))
 
+                            print(f'Activating the task: {title}')
                             result = await self._toloka.assign_task(pool_id, task['refUuid'])
                             if not result.get('id'):
                                 result = await self._toloka.assign_task(pool_id, task['refUuid'])
                             if result.get('id'):
-                                print('Activated task: {}'.format(title))
-                                Notify()(subtitle='Activated task', message=title)
+                                print(f'A task was activated: {title}')
+                                Notify()(subtitle='The task was activated', message=title)
+                            else:
+                                print(f'Can\'t activate a task: {title}')
             except HttpError:
                 await asyncio.sleep(1)
