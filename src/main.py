@@ -1,6 +1,7 @@
 import asyncio
 import argparse
 from pytoloka import Toloka
+from pytoloka.exceptions import HttpError
 from config import Config
 from window import Window
 from auto_accept import AutoAccept
@@ -18,5 +19,11 @@ if __name__ == '__main__':
     else:
         config = Config()
         toloka = Toloka()
-        if asyncio.run(toloka.login(config.username, config.password)):
-            Window(AutoAccept(toloka))()
+        try:
+            login = asyncio.run(toloka.login(config.username, config.password))
+            if login:
+                Window(AutoAccept(toloka))()
+            else:
+                print('You are not logged in!')
+        except HttpError:
+            exit(1)
