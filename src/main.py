@@ -6,7 +6,7 @@ from config import Config
 from window import Window
 from auto_accept import AutoAccept
 
-VERSION = '0.0.1'
+VERSION = '0.1.0'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
