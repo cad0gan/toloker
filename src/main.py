@@ -11,10 +11,21 @@ VERSION = '0.0.1'
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # parser.add_argument('action', nargs='?', help='[accept]')
+    parser.add_argument('-l', '--list-tasks', action='store_true', help='show all tasks')
     parser.add_argument('-v', '--version', action='store_true', help='show version and exit')
     args = parser.parse_args()
 
-    if args.version:
+    if args.list_tasks:
+        config = Config()
+        toloka = Toloka()
+        login = asyncio.run(toloka.login(config.username, config.password))
+        if login:
+            tasks = asyncio.run(toloka.get_tasks())
+            for task in tasks:
+                print(task['title'])
+        else:
+            print('You are not logged in!')
+    elif args.version:
         print(VERSION)
     else:
         config = Config()
