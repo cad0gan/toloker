@@ -35,8 +35,7 @@ class AutoAccept:
 
             try:
                 toloka_tasks = await self._toloka.get_tasks()
-                count += 1
-                print(f'Requests: {count}')
+                print(f'Requests: {count + 1}. Total tasks: {len(toloka_tasks)}.')
                 sys.stdout.write('\033[F')
                 sys.stdout.write('\033[K')
                 for task in toloka_tasks:
@@ -64,5 +63,6 @@ class AutoAccept:
                 if self._pause == 1:
                     print('Pause')
                     self._pause = 2
+                count += 1
             except HttpError:
                 await asyncio.sleep(1)
