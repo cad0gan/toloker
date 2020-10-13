@@ -12,6 +12,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # parser.add_argument('action', nargs='?', help='[accept]')
     parser.add_argument('-l', '--list-tasks', action='store_true', help='show all tasks')
+    parser.add_argument('-s', '--list-skills', action='store_true', help='show your skills')
     parser.add_argument('-v', '--version', action='store_true', help='show version and exit')
     args = parser.parse_args()
 
@@ -25,6 +26,19 @@ if __name__ == '__main__':
                 print(task['title'])
         else:
             print('You are not logged in!')
+    elif args.list_skills:
+        config = Config()
+        toloka = Toloka()
+        try:
+            login = asyncio.run(toloka.login(config.username, config.password))
+            if login:
+                skills = asyncio.run(toloka.get_skills())
+                for skill in skills:
+                    print('{}: {}'.format(skill['skillName'], skill['value']))
+            else:
+                print('You are not logged in!')
+        except HttpError:
+            exit(1)
     elif args.version:
         print(VERSION)
     else:
