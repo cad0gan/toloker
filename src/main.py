@@ -2,7 +2,7 @@ import asyncio
 import argparse
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError
-from window import Window
+from app import Window
 from shortcuts import login
 from auto_accept import AutoAccept
 

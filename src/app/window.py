@@ -2,7 +2,7 @@ import curses
 import signal
 import asyncio
 from threading import Thread
-from window.stdout import StdOut
+from app.stdout import StdOut
 
 
 class Window:
