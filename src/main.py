@@ -4,6 +4,7 @@ from pytoloka import Toloka
 from pytoloka.exceptions import HttpError
 from config import Config
 from window import Window
+from shortcuts import login
 from auto_accept import AutoAccept
 
 VERSION = '0.1.0'
@@ -17,38 +18,29 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.list_tasks:
-        config = Config()
-        toloka = Toloka()
-        login = asyncio.run(toloka.login(config.username, config.password))
-        if login:
-            tasks = asyncio.run(toloka.get_tasks())
-            for task in tasks:
-                print(task['title'])
-        else:
-            print('You are not logged in!')
-    elif args.list_skills:
-        config = Config()
-        toloka = Toloka()
         try:
-            login = asyncio.run(toloka.login(config.username, config.password))
-            if login:
+            toloka = Toloka()
+            if login(toloka):
+                tasks = asyncio.run(toloka.get_tasks())
+                for task in tasks:
+                    print(task['title'])
+        except HttpError:
+            exit(1)
+    elif args.list_skills:
+        try:
+            toloka = Toloka()
+            if login(toloka):
                 skills = asyncio.run(toloka.get_skills())
                 for skill in skills:
                     print('{}: {}'.format(skill['skillName'], skill['value']))
-            else:
-                print('You are not logged in!')
         except HttpError:
             exit(1)
     elif args.version:
         print(VERSION)
     else:
-        config = Config()
-        toloka = Toloka()
         try:
-            login = asyncio.run(toloka.login(config.username, config.password))
-            if login:
+            toloka = Toloka()
+            if login(toloka):
                 Window(AutoAccept(toloka))()
-            else:
-                print('You are not logged in!')
         except HttpError:
             exit(1)
