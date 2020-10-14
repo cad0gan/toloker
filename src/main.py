@@ -52,7 +52,14 @@ if __name__ == '__main__':
                         skill_name = skill['skillName']
                         value = skill['value']
                         string += f'\033[1m{requester}\033[0m. '
-                        string += f'{skill_name}: {value}'
+                        string += f'{skill_name}: '
+                        if value <= 25:
+                            string += '\33[31m'  # red
+                        elif value <= 75:
+                            string += '\33[33m'  # yellow
+                        elif value <= 100:
+                            string += '\33[32m'  # red
+                        string += f'{value}\33[0m'
                         print(string)
             except HttpError:
                 exit(1)
