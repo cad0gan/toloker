@@ -3,8 +3,8 @@ import argparse
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError
 from app import Window
+from assigner import Assigner
 from shortcuts import login
-from auto_accept import AutoAccept
 
 VERSION = '0.3.0'
 
@@ -52,6 +52,6 @@ if __name__ == '__main__':
         try:
             toloka = Toloka()
             if login(toloka):
-                Window(AutoAccept(toloka))()
+                Window(Assigner(toloka))()
         except HttpError:
             exit(1)

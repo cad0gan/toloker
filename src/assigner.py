@@ -5,7 +5,7 @@ from pytoloka.exceptions import HttpError
 from notify import Notify
 
 
-class AutoAccept:
+class Assigner:
     def __init__(self, toloka: Toloka) -> None:
         self._toloka: Toloka = toloka
         self._exit: bool = False
