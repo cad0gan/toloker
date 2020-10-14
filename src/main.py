@@ -30,7 +30,12 @@ if __name__ == '__main__':
                 if login(toloka):
                     tasks = asyncio.run(toloka.get_tasks())
                     for task in tasks:
-                        print(task['title'])
+                        string: str = str()
+                        title = task['title']
+                        requester = task['requesterInfo']['name']['EN']  # requester
+                        string += f'\033[1m{requester}\033[0m. '
+                        string += title
+                        print(string)
             except HttpError:
                 exit(1)
     elif args.subparser == 'skills':
