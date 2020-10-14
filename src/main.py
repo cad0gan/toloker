@@ -33,8 +33,8 @@ if __name__ == '__main__':
                     tasks = asyncio.run(toloka.get_tasks())
                     for task in tasks:
                         string: str = str()
-                        title = task['title']
                         requester = task['requesterInfo']['name']['EN']  # requester
+                        title = task['title']
                         string += f'\033[1m{requester}\033[0m. '
                         string += title
                         print(string)
@@ -47,7 +47,13 @@ if __name__ == '__main__':
                 if login(toloka):
                     skills = asyncio.run(toloka.get_skills())
                     for skill in skills:
-                        print('{}: {}'.format(skill['skillName'], skill['value']))
+                        string: str = str()
+                        requester = skill['requesterName']['EN']
+                        skill_name = skill['skillName']
+                        value = skill['value']
+                        string += f'\033[1m{requester}\033[0m. '
+                        string += f'{skill_name}: {value}'
+                        print(string)
             except HttpError:
                 exit(1)
     elif args.subparser == 'assigner':
