@@ -10,3 +10,17 @@ Command line interface for Yandex Toloka.
 
 ## Usage
     ./toloker -h
+### Examples
+Automatic assign your favorite tasks:
+    
+    ./toloker assigner
+Show all tasks:
+
+    ./toloker tasks -l
+Show your skills:
+
+    ./toloker skills -l
+    
+Show your transactions:
+
+    ./toloker transactions -l
