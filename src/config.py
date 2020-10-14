@@ -5,7 +5,9 @@ from singleton import Singleton
 
 class Config(metaclass=Singleton):
     def __init__(self) -> None:
-        path = Path.home().joinpath('.config', 'toloker', 'config.yml')
+        directory = Path.home().joinpath('.config', 'toloker')
+        directory.mkdir(exist_ok=True)
+        path = directory.joinpath('config.yml')
         with open(path) as fp:
             self._config = yaml.safe_load(fp)
 
