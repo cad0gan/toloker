@@ -12,6 +12,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest='subparser')
 
+    parser_assigner = subparsers.add_parser('assigner')
+
     parser_tasks = subparsers.add_parser('tasks')
     parser_tasks.add_argument('-l', '--list-tasks', action='store_true', help='show all tasks')
 
@@ -48,7 +50,7 @@ if __name__ == '__main__':
                         print('{}: {}'.format(skill['skillName'], skill['value']))
             except HttpError:
                 exit(1)
-    else:
+    elif args.subparser == 'assigner':
         try:
             toloka = Toloka()
             if login(toloka):
