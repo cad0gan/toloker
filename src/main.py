@@ -6,7 +6,7 @@ from app import Window
 from shortcuts import login
 from auto_accept import AutoAccept
 
-VERSION = '0.2.0'
+VERSION = '0.3.0'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
