@@ -1,5 +1,6 @@
 import asyncio
 import argparse
+from datetime import datetime
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError
 from app import Window
@@ -13,18 +14,25 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers(dest='subparser')
 
     parser_assigner = subparsers.add_parser('assigner')
-
     parser_tasks = subparsers.add_parser('tasks')
     parser_tasks.add_argument('-l', '--list-tasks', action='store_true', help='show all tasks')
-
     parser_skills = subparsers.add_parser('skills')
     parser_skills.add_argument('-l', '--list-skills', action='store_true', help='show all skills')
+    parser_transactions = subparsers.add_parser('transactions')
+    parser_transactions.add_argument('-l', '--list-transactions', action='store_true', help='show all transactions')
 
     parser.add_argument('-v', '--version', action='store_true', help='show version and exit')
     args = parser.parse_args()
 
     if args.version:
         print(VERSION)
+    elif args.subparser == 'assigner':
+        try:
+            toloka = Toloka()
+            if login(toloka):
+                Window(Assigner(toloka))()
+        except HttpError:
+            exit(1)
     elif args.subparser == 'tasks':
         if args.list_tasks:
             try:
@@ -63,10 +71,20 @@ if __name__ == '__main__':
                         print(string)
             except HttpError:
                 exit(1)
-    elif args.subparser == 'assigner':
-        try:
-            toloka = Toloka()
-            if login(toloka):
-                Window(Assigner(toloka))()
-        except HttpError:
-            exit(1)
+    elif args.subparser == 'transactions':
+        if args.list_transactions:
+            try:
+                toloka = Toloka()
+                if login(toloka):
+                    transactions = asyncio.run(toloka.get_transactions())
+                    for transaction in transactions:
+                        start_dt = datetime.strptime(transaction['startDate'], '%Y-%m-%dT%H:%M:%S.%f')
+                        payment_system = transaction['account']['paymentSystem']
+                        amount = transaction['amount']
+                        status = transaction['status']
+                        print('{} {}\t{}\t{} $'.format(
+                            start_dt.strftime('%d.%m.%y %H:%M'),
+                            payment_system, status, amount
+                        ))
+            except HttpError:
+                exit(1)
