@@ -1,6 +1,5 @@
 import asyncio
 import argparse
-from datetime import datetime
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError
 from app import Window
