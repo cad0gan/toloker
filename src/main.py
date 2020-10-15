@@ -84,7 +84,6 @@ if __name__ == '__main__':
                     transactions: list = asyncio.run(toloka.get_transactions(max_count))
                     for transaction in transactions:
                         start_dt: datetime = transaction['startDate']
-                        start_dt = pytz.utc.localize(start_dt)
                         start_dt = start_dt.astimezone(tz)
 
                         payment_system: str = transaction['account']['paymentSystem']
