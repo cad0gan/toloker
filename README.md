@@ -20,10 +20,9 @@ https://github.com/julienXX/terminal-notifier
 Automatic assign your favorite tasks:
     
     ./toloker assigner
-##### Hotkeys
-**q**: quit
-
-**s**: pause
+**Hotkeys**:
+* **q**: quit
+* **s**: pause
 #### Other
 Show all tasks:
 
