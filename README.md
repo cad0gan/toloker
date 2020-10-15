@@ -8,6 +8,9 @@ The command line interface for Yandex Toloka.
     pip install -r pytoloka/requirements.txt
     mkdir -p ~/.config/toloker/
     cp config_sample.yml ~/.config/toloker/config.yml
+    
+If you are using macOS and you want to get notifications, install **terminal-notifier**.
+https://github.com/julienXX/terminal-notifier 
 
 ## Usage
     ./toloker -h
@@ -25,3 +28,7 @@ Show your skills:
 Show your transactions:
 
     ./toloker transactions -l
+
+Show last 5 transactions:
+
+    ./toloker transactions -l n 5
