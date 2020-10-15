@@ -1,5 +1,5 @@
 # toloker
-Command line interface for Yandex Toloka.
+The command line interface for Yandex Toloka.
 
 ## Install
     git clone git@github.com:cad0gan/toloker.git
