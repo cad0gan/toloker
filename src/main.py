@@ -81,14 +81,14 @@ if __name__ == '__main__':
                     max_count: int = args.n if args.n is not None and args.n > 0 else 0
                     transactions: list = asyncio.run(toloka.get_transactions(max_count))
                     for transaction in transactions:
-                        start_date: datetime = transaction['startDate']
-                        start_date = start_date.replace(tzinfo=get_localzone())
+                        start_dt: datetime = transaction['startDate']
+                        start_dt = start_dt.replace(tzinfo=get_localzone())
 
                         payment_system: str = transaction['account']['paymentSystem']
                         amount: str = transaction['amount']
                         status: str = transaction['status']
                         print('{} {}\t{}\t{} $'.format(
-                            start_date.strftime('%d.%m.%y %H:%M'),
+                            start_dt.strftime('%d.%m.%y %H:%M'),
                             payment_system, status, amount
                         ))
             except HttpError:
