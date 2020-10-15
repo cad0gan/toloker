@@ -9,7 +9,7 @@ from app import Window
 from assigner import Assigner
 from shortcuts import login
 
-VERSION = '0.7.1'
+VERSION = '0.7.2'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
