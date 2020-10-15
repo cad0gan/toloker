@@ -1,5 +1,6 @@
 import asyncio
 import argparse
+from tzlocal import get_localzone
 from datetime import datetime
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError
@@ -81,6 +82,8 @@ if __name__ == '__main__':
                     transactions: list = asyncio.run(toloka.get_transactions(max_count))
                     for transaction in transactions:
                         start_date: datetime = transaction['startDate']
+                        start_date = start_date.replace(tzinfo=get_localzone())
+
                         payment_system: str = transaction['account']['paymentSystem']
                         amount: str = transaction['amount']
                         status: str = transaction['status']
