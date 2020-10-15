@@ -78,12 +78,12 @@ if __name__ == '__main__':
                 if login(toloka):
                     transactions = asyncio.run(toloka.get_transactions())
                     for transaction in transactions:
-                        start_dt = datetime.strptime(transaction['startDate'], '%Y-%m-%dT%H:%M:%S.%f')
+                        start_date = transaction['startDate']
                         payment_system = transaction['account']['paymentSystem']
                         amount = transaction['amount']
                         status = transaction['status']
                         print('{} {}\t{}\t{} $'.format(
-                            start_dt.strftime('%d.%m.%y %H:%M'),
+                            start_date.strftime('%d.%m.%y %H:%M'),
                             payment_system, status, amount
                         ))
             except HttpError:
