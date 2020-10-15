@@ -16,9 +16,15 @@ https://github.com/julienXX/terminal-notifier
 ## Usage
     ./toloker -h
 ### Examples
+#### Assigner
 Automatic assign your favorite tasks:
     
     ./toloker assigner
+##### Hotkeys
+**q**: quit
+
+**s**: pause
+#### Other
 Show all tasks:
 
     ./toloker tasks -l
