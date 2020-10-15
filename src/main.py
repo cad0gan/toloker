@@ -1,5 +1,6 @@
 import asyncio
 import argparse
+from datetime import datetime
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError
 from app import Window
@@ -28,7 +29,7 @@ if __name__ == '__main__':
         print(VERSION)
     elif args.subparser == 'assigner':
         try:
-            toloka = Toloka()
+            toloka: Toloka = Toloka()
             if login(toloka):
                 Window(Assigner(toloka))()
         except HttpError:
@@ -36,13 +37,13 @@ if __name__ == '__main__':
     elif args.subparser == 'tasks':
         if args.list:
             try:
-                toloka = Toloka()
+                toloka: Toloka = Toloka()
                 if login(toloka):
-                    tasks = asyncio.run(toloka.get_tasks())
+                    tasks: list = asyncio.run(toloka.get_tasks())
                     for task in tasks:
                         string: str = str()
-                        requester = task['requesterInfo']['name']['EN']  # requester
-                        title = task['title']
+                        requester: str = task['requesterInfo']['name']['EN']  # requester
+                        title: str = task['title']
                         string += f'\033[1m{requester}\033[0m. '
                         string += title
                         print(string)
@@ -51,14 +52,14 @@ if __name__ == '__main__':
     elif args.subparser == 'skills':
         if args.list:
             try:
-                toloka = Toloka()
+                toloka: Toloka = Toloka()
                 if login(toloka):
-                    skills = asyncio.run(toloka.get_skills())
+                    skills: list = asyncio.run(toloka.get_skills())
                     for skill in skills:
                         string: str = str()
-                        requester = skill['requesterName']['EN']
-                        skill_name = skill['skillName']
-                        value = skill['value']
+                        requester: str = skill['requesterName']['EN']
+                        skill_name: str = skill['skillName']
+                        value: int = skill['value']
                         string += f'\033[1m{requester}\033[0m. '
                         string += f'{skill_name}: '
                         if value <= 25:
@@ -74,15 +75,15 @@ if __name__ == '__main__':
     elif args.subparser == 'transactions':
         if args.list:
             try:
-                toloka = Toloka()
+                toloka: Toloka = Toloka()
                 if login(toloka):
-                    max_count = args.n if args.n is not None and args.n > 0 else 0
-                    transactions = asyncio.run(toloka.get_transactions(max_count))
+                    max_count: int = args.n if args.n is not None and args.n > 0 else 0
+                    transactions: list = asyncio.run(toloka.get_transactions(max_count))
                     for transaction in transactions:
-                        start_date = transaction['startDate']
-                        payment_system = transaction['account']['paymentSystem']
-                        amount = transaction['amount']
-                        status = transaction['status']
+                        start_date: datetime = transaction['startDate']
+                        payment_system: str = transaction['account']['paymentSystem']
+                        amount: str = transaction['amount']
+                        status: str = transaction['status']
                         print('{} {}\t{}\t{} $'.format(
                             start_date.strftime('%d.%m.%y %H:%M'),
                             payment_system, status, amount
