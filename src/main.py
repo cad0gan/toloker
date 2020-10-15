@@ -8,7 +8,7 @@ from app import Window
 from assigner import Assigner
 from shortcuts import login
 
-VERSION = '0.6.0'
+VERSION = '0.7.0'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
