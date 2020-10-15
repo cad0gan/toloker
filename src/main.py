@@ -1,3 +1,4 @@
+import pytz
 import asyncio
 import argparse
 from tzlocal import get_localzone
@@ -78,11 +79,13 @@ if __name__ == '__main__':
             try:
                 toloka: Toloka = Toloka()
                 if login(toloka):
+                    tz = pytz.timezone(str(get_localzone()))
                     max_count: int = args.n if args.n is not None and args.n > 0 else 0
                     transactions: list = asyncio.run(toloka.get_transactions(max_count))
                     for transaction in transactions:
                         start_dt: datetime = transaction['startDate']
-                        start_dt = start_dt.replace(tzinfo=get_localzone())
+                        start_dt = pytz.utc.localize(start_dt)
+                        start_dt = start_dt.astimezone(tz)
 
                         payment_system: str = transaction['account']['paymentSystem']
                         amount: str = transaction['amount']
