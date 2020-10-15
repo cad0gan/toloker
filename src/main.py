@@ -19,6 +19,7 @@ if __name__ == '__main__':
     parser_skills.add_argument('-l', '--list', action='store_true', help='show all skills')
     parser_transactions = subparsers.add_parser('transactions')
     parser_transactions.add_argument('-l', '--list', action='store_true', help='show all transactions')
+    parser_transactions.add_argument('-n', type=int)
 
     parser.add_argument('-v', '--version', action='store_true', help='show version and exit')
     args = parser.parse_args()
@@ -75,7 +76,8 @@ if __name__ == '__main__':
             try:
                 toloka = Toloka()
                 if login(toloka):
-                    transactions = asyncio.run(toloka.get_transactions())
+                    max_count = args.n if args.n is not None and args.n > 0 else 0
+                    transactions = asyncio.run(toloka.get_transactions(max_count))
                     for transaction in transactions:
                         start_date = transaction['startDate']
                         payment_system = transaction['account']['paymentSystem']
