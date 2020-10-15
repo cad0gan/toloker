@@ -15,11 +15,11 @@ if __name__ == '__main__':
 
     parser_assigner = subparsers.add_parser('assigner')
     parser_tasks = subparsers.add_parser('tasks')
-    parser_tasks.add_argument('-l', '--list-tasks', action='store_true', help='show all tasks')
+    parser_tasks.add_argument('-l', '--list', action='store_true', help='show all tasks')
     parser_skills = subparsers.add_parser('skills')
-    parser_skills.add_argument('-l', '--list-skills', action='store_true', help='show all skills')
+    parser_skills.add_argument('-l', '--list', action='store_true', help='show all skills')
     parser_transactions = subparsers.add_parser('transactions')
-    parser_transactions.add_argument('-l', '--list-transactions', action='store_true', help='show all transactions')
+    parser_transactions.add_argument('-l', '--list', action='store_true', help='show all transactions')
 
     parser.add_argument('-v', '--version', action='store_true', help='show version and exit')
     args = parser.parse_args()
@@ -34,7 +34,7 @@ if __name__ == '__main__':
         except HttpError:
             exit(1)
     elif args.subparser == 'tasks':
-        if args.list_tasks:
+        if args.list:
             try:
                 toloka = Toloka()
                 if login(toloka):
@@ -49,7 +49,7 @@ if __name__ == '__main__':
             except HttpError:
                 exit(1)
     elif args.subparser == 'skills':
-        if args.list_skills:
+        if args.list:
             try:
                 toloka = Toloka()
                 if login(toloka):
@@ -72,7 +72,7 @@ if __name__ == '__main__':
             except HttpError:
                 exit(1)
     elif args.subparser == 'transactions':
-        if args.list_transactions:
+        if args.list:
             try:
                 toloka = Toloka()
                 if login(toloka):
