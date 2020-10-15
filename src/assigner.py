@@ -56,7 +56,7 @@ class Assigner:
                                 code = result.get('code')
                             if not code:
                                 print(f'A task is activated: {title}')
-                                Notify()(subtitle='The task was activated', message=title)
+                                Notify()(subtitle='The task is activated', message=title)
                             else:
                                 message = result.get('message')
                                 print(f'Can\'t activate a task: {title}. {message}.')
