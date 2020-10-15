@@ -22,7 +22,7 @@ Automatic assign your favorite tasks:
     ./toloker assigner
 **Hotkeys**:
 * **q**: quit
-* **s**: pause
+* **s**: stop/start
 #### Other
 Show all tasks:
 
