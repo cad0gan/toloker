@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser_skills.add_argument('-l', '--list', action='store_true', help='show all skills')
     parser_transactions = subparsers.add_parser('transactions')
     parser_transactions.add_argument('-l', '--list', action='store_true', help='show all transactions')
-    parser_transactions.add_argument('-n', type=int)
+    parser_transactions.add_argument('-n', type=int, metavar='COUNT', help='transactions count')
 
     parser.add_argument('-v', '--version', action='store_true', help='show version and exit')
     args = parser.parse_args()
