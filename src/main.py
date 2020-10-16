@@ -20,6 +20,7 @@ if __name__ == '__main__':
     parser_tasks.add_argument('-l', '--list', action='store_true', help='show all tasks')
     parser_skills = subparsers.add_parser('skills')
     parser_skills.add_argument('-l', '--list', action='store_true', help='show all skills')
+    parser_skills.add_argument('-n', type=int, metavar='COUNT', help='skills count')
     parser_transactions = subparsers.add_parser('transactions')
     parser_transactions.add_argument('-l', '--list', action='store_true', help='show all transactions')
     parser_transactions.add_argument('-n', type=int, metavar='COUNT', help='transactions count')
@@ -56,7 +57,8 @@ if __name__ == '__main__':
             try:
                 toloka: Toloka = Toloka()
                 if login(toloka):
-                    skills: list = asyncio.run(toloka.get_skills())
+                    max_count: int = args.n if args.n is not None and args.n > 0 else 0
+                    skills: list = asyncio.run(toloka.get_skills(max_count))
                     for skill in skills:
                         string: str = str()
                         requester: str = skill['requesterName']['EN']
