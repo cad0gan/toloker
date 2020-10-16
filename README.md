@@ -26,9 +26,19 @@ Automatic assign your favorite tasks:
 Show all tasks:
 
     ./toloker tasks -l
+    
+-------------------------------------
+
+
 Show your skills:
 
     ./toloker skills -l
+    
+Show first 3 skills
+
+    ./toloker skills -l -n 3
+    
+-------------------------------------
     
 Show your transactions:
 
