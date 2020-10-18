@@ -29,16 +29,17 @@ Show all tasks:
     
 -------------------------------------
 
+Show worker information:
+
+    ./toloker worker
 
 Show your skills:
 
     ./toloker skills -l
-    
+
 Show first 3 skills
 
     ./toloker skills -l -n 3
-    
--------------------------------------
     
 Show your transactions:
 
@@ -47,3 +48,7 @@ Show your transactions:
 Show last 5 transactions:
 
     ./toloker transactions -l -n 5
+
+Show analytics:
+
+    ./toloker history -a
