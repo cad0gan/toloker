@@ -3,10 +3,15 @@ import os
 import sys
 from pathlib import Path
 
-
 if __name__ == '__main__':
     root = Path(__file__).parent
-    lib = root / 'pytoloka'
     exe = root.joinpath('src', 'main.py')
     args = ' '.join(sys.argv[1:])
-    os.system(f'PYTHONPATH=$PYTHONPATH:{lib} python {exe} {args}')
+
+    cmd = f'python {exe} {args}'
+    try:
+        from pytoloka import Toloka
+        os.system(cmd)
+    except ImportError:
+        lib = root / 'pytoloka'
+        os.system(f'PYTHONPATH=$PYTHONPATH:{lib} {cmd}')
