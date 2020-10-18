@@ -25,6 +25,8 @@ if __name__ == '__main__':
     parser_transactions = subparsers.add_parser('transactions')
     parser_transactions.add_argument('-l', '--list', action='store_true', help='show all transactions')
     parser_transactions.add_argument('-n', type=int, metavar='COUNT', help='transactions count')
+    parser_history = subparsers.add_parser('history')
+    parser_history.add_argument('-a', '--analytics', action='store_true', help='show analytics')
 
     parser.add_argument('-v', '--version', action='store_true', help='show version and exit')
     args = parser.parse_args()
@@ -110,3 +112,15 @@ if __name__ == '__main__':
                         ))
             except HttpError:
                 exit(1)
+    elif args.subparser == 'history':
+        try:
+            if args.analytics:
+                toloka: Toloka = Toloka()
+                if login(toloka):
+                    analytics = asyncio.run(toloka.get_analytics())
+                    print('Completed task: {}'.format(analytics['totalSubmittedAssignmentsCount']))
+                    print('Rejected task: {}'.format(analytics['totalRejectedAssignmentsCount']))
+                    print('Task under review: {}'.format(analytics['onReviewAssignmentsCount']))
+                    print('Total sum earned since starting: {:.2f} $'.format(analytics['totalIncome']))
+        except HttpError:
+            exit(1)
