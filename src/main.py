@@ -40,18 +40,6 @@ if __name__ == '__main__':
                 Window(Assigner(toloka))()
         except HttpError:
             exit(1)
-    elif args.subparser == 'worker':
-        try:
-            toloka: Toloka = Toloka()
-            if login(toloka):
-                worker = asyncio.run(toloka.get_worker())
-                print('Balance: {} / {}'.format(
-                    '\33[90m' + '%.4g' % worker['blockedBalance'] + ' $' + '\033[0m',
-                    '\33[32m' + '%.4g' % worker['balance'] + ' $' + '\033[0m'
-                ))
-                print('Rating: {}'.format(worker['rating']))
-        except HttpError:
-            exit(1)
     elif args.subparser == 'tasks':
         if args.list:
             try:
@@ -67,6 +55,18 @@ if __name__ == '__main__':
                         print(string)
             except HttpError:
                 exit(1)
+    elif args.subparser == 'worker':
+        try:
+            toloka: Toloka = Toloka()
+            if login(toloka):
+                worker = asyncio.run(toloka.get_worker())
+                print('Balance: {} / {}'.format(
+                    '\33[90m' + '%.4g' % worker['blockedBalance'] + ' $' + '\033[0m',
+                    '\33[32m' + '%.4g' % worker['balance'] + ' $' + '\033[0m'
+                ))
+                print('Rating: {}'.format(worker['rating']))
+        except HttpError:
+            exit(1)
     elif args.subparser == 'skills':
         if args.list:
             try:
