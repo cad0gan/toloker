@@ -16,6 +16,7 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers(dest='subparser')
 
     parser_assigner = subparsers.add_parser('assigner')
+    parser_worker = subparsers.add_parser('worker')
     parser_tasks = subparsers.add_parser('tasks')
     parser_tasks.add_argument('-l', '--list', action='store_true', help='show all tasks')
     parser_skills = subparsers.add_parser('skills')
@@ -35,6 +36,18 @@ if __name__ == '__main__':
             toloka: Toloka = Toloka()
             if login(toloka):
                 Window(Assigner(toloka))()
+        except HttpError:
+            exit(1)
+    elif args.subparser == 'worker':
+        try:
+            toloka: Toloka = Toloka()
+            if login(toloka):
+                worker = asyncio.run(toloka.get_worker())
+                print('Balance: {} / {}'.format(
+                    '\33[90m' + '%.4g' % worker['blockedBalance'] + ' $' + '\033[0m',
+                    '\33[32m' + '%.4g' % worker['balance'] + ' $' + '\033[0m'
+                ))
+                print('Rating: {}'.format(worker['rating']))
         except HttpError:
             exit(1)
     elif args.subparser == 'tasks':
