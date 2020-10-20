@@ -1,5 +1,6 @@
 import sys
 import asyncio
+from termcolor import colored
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError
 from notify import Notify
@@ -26,6 +27,7 @@ class Assigner:
 
     async def __call__(self, *args, **kwargs) -> None:
         count = 0
+        errors = 0
         while True:
             if self._exit:
                 break
@@ -35,7 +37,10 @@ class Assigner:
 
             try:
                 toloka_tasks = await self._toloka.get_tasks()
-                print(f'Requests: {count + 1}. Total tasks: {len(toloka_tasks)}.')
+                print('Requests: {}|{}. Total tasks: {}.'.format(
+                    colored(str(count + 1), 'green'), colored(str(errors), 'red'),
+                    len(toloka_tasks)
+                ))
                 sys.stdout.write('\033[F')
                 sys.stdout.write('\033[K')
                 for task in toloka_tasks:
@@ -65,4 +70,5 @@ class Assigner:
                     self._pause = 2
                 count += 1
             except HttpError:
+                errors += 1
                 await asyncio.sleep(1)
