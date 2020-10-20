@@ -1,6 +1,7 @@
 import pytz
 import asyncio
 import argparse
+from typing import Union
 from decimal import Decimal
 from datetime import datetime
 from tzlocal import get_localzone
@@ -106,9 +107,11 @@ if __name__ == '__main__':
                         start_dt = start_dt.astimezone(tz)
 
                         payment_system: str = transaction['account']['paymentSystem']
-                        amount: Decimal = transaction['amount']
+                        amount: Union[Decimal, str] = transaction['amount']
                         status: str = transaction['status']
-                        print('{} {}\t{}\t{:.2f} $'.format(
+                        amount = '{:.2f}'.format(amount)
+                        amount = amount.rjust(5, ' ')
+                        print('{} {}\t{}\t{} $'.format(
                             start_dt.strftime('%d.%m.%y %H:%M'),
                             payment_system, status, amount
                         ))
