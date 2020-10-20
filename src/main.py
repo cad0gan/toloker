@@ -87,7 +87,7 @@ if __name__ == '__main__':
                         elif value <= 75:
                             string += '\33[33m'  # yellow
                         elif value <= 100:
-                            string += '\33[32m'  # red
+                            string += '\33[32m'  # green
                         string += f'{value}\33[0m'
                         print(string)
             except HttpError:
