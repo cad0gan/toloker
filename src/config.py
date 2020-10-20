@@ -29,4 +29,4 @@ class Config(metaclass=Singleton):
 
     @property
     def notify(self):
-        return self._config.get('notify')
+        return self._config.get('notify', [])
