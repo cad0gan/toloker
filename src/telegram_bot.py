@@ -15,7 +15,7 @@ class TelegramBot(metaclass=Singleton):
 
     @staticmethod
     def _handle_start(update, context) -> None:
-        update.message.reply_text(str(update.message.chat_id))
+        update.message.reply_text(f'This chat_id is: {update.message.chat_id}')
 
     def send_message(self, message: str) -> None:
         self._updater.bot.send_message(Config().telegram_chat_id, message)
