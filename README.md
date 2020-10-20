@@ -11,7 +11,9 @@ The command line interface for Yandex Toloka.
     cp config_sample.yml ~/.config/toloker/config.yml
     
 If you are using macOS and you want to get notifications, install **terminal-notifier**.
-https://github.com/julienXX/terminal-notifier 
+https://github.com/julienXX/terminal-notifier
+
+If you want to use telegram notifications, create telegram bot and send command "/start".
 
 ## Usage
     ./toloker -h
