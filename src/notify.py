@@ -5,16 +5,16 @@ from telegram_bot import TelegramBot
 
 
 class Notify(metaclass=Singleton):
-    def __init__(self):
-        config = Config()
-        self._notify = config.notify
+    def __init__(self) -> None:
+        config: Config = Config()
+        self._notify: list = config.notify
 
     @staticmethod
     def _terminal_notifier(title: str, subtitle: str, message: str):
-        title = f'-title "{title}"'
-        subtitle = f'-subtitle "{subtitle}"'
-        message = f'-message "{message}"'
-        cmd = f'terminal-notifier {title} {subtitle} {message} -sound default'
+        title: str = f'-title "{title}"'
+        subtitle: str = f'-subtitle "{subtitle}"'
+        message: str = f'-message "{message}"'
+        cmd: str = f'terminal-notifier {title} {subtitle} {message} -sound default'
         subprocess.call(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     @staticmethod
