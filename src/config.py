@@ -20,5 +20,13 @@ class Config(metaclass=Singleton):
         return self._config['password']
 
     @property
+    def telegram_token(self) -> str:
+        return self._config.get('telegram-token', str())
+
+    @property
+    def telegram_chat_id(self) -> int:
+        return self._config.get('telegram-chat_id', int())
+
+    @property
     def notify(self):
         return self._config.get('notify')

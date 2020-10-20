@@ -3,6 +3,7 @@ import signal
 import asyncio
 from threading import Thread
 from app.stdout import StdOut
+from telegram_bot import TelegramBot
 
 
 class Window:
@@ -11,12 +12,14 @@ class Window:
         self._screen = None
         self._stdout = StdOut()
         self._thread = Thread(target=self._handle_keypress)
+        self._telegram_bot = TelegramBot()
 
     def _handle_keypress(self):
         while True:
             ch = self._screen.getch()
             if ch == ord('q'):
                 self._worker.exit()
+                self._telegram_bot.exit()
                 break
             elif ch == ord('s'):
                 self._worker.pause()
@@ -35,7 +38,10 @@ class Window:
         self._stdout.set()
         signal.signal(signal.SIGINT, lambda signum, frame: None)
         self._thread.start()
-        asyncio.run(self._worker())
+
+        async def run():
+            await asyncio.gather(self._worker(), self._telegram_bot())
+        asyncio.run(run())
 
     def __del__(self):
         self._thread.join()
