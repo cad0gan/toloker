@@ -7,16 +7,16 @@ from telegram_bot import TelegramBot
 
 
 class Window:
-    def __init__(self, worker):
-        self._worker = worker
-        self._screen = None
-        self._stdout = StdOut()
-        self._thread = Thread(target=self._handle_keypress)
-        self._telegram_bot = TelegramBot()
+    def __init__(self, worker: any) -> None:
+        self._worker: any = worker
+        self._screen: any = None
+        self._stdout: StdOut = StdOut()
+        self._thread: Thread = Thread(target=self._handle_keypress)
+        self._telegram_bot: TelegramBot = TelegramBot()
 
-    def _handle_keypress(self):
+    def _handle_keypress(self) -> None:
         while True:
-            ch = self._screen.getch()
+            ch: int = self._screen.getch()
             if ch == ord('q'):
                 self._worker.exit()
                 self._telegram_bot.exit()
@@ -24,8 +24,8 @@ class Window:
             elif ch == ord('s'):
                 self._worker.pause()
 
-    def __call__(self):
-        self._screen = curses.initscr()
+    def __call__(self) -> None:
+        self._screen: any = curses.initscr()
         curses.cbreak()
         curses.noecho()
         curses.curs_set(False)
@@ -43,7 +43,7 @@ class Window:
             await asyncio.gather(self._worker(), self._telegram_bot())
         asyncio.run(run())
 
-    def __del__(self):
+    def __del__(self) -> None:
         self._thread.join()
         curses.endwin()
         self._stdout.unset()
