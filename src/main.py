@@ -1,6 +1,7 @@
 import pytz
 import asyncio
 import argparse
+from decimal import Decimal
 from tzlocal import get_localzone
 from datetime import datetime
 from pytoloka import Toloka
@@ -61,8 +62,8 @@ if __name__ == '__main__':
             if login(toloka):
                 worker = asyncio.run(toloka.get_worker())
                 print('Balance: {} / {}'.format(
-                    '\33[90m' + '%.4g' % worker['blockedBalance'] + ' $' + '\033[0m',
-                    '\33[32m' + '%.4g' % worker['balance'] + ' $' + '\033[0m'
+                    '\33[90m' + '%.2f' % worker['blockedBalance'] + ' $' + '\033[0m',
+                    '\33[32m' + '%.2f' % worker['balance'] + ' $' + '\033[0m'
                 ))
                 print('Rating: {}'.format(worker['rating']))
         except HttpError:
@@ -104,9 +105,9 @@ if __name__ == '__main__':
                         start_dt = start_dt.astimezone(tz)
 
                         payment_system: str = transaction['account']['paymentSystem']
-                        amount: str = transaction['amount']
+                        amount: Decimal = transaction['amount']
                         status: str = transaction['status']
-                        print('{} {}\t{}\t{} $'.format(
+                        print('{} {}\t{}\t{:.2f} $'.format(
                             start_dt.strftime('%d.%m.%y %H:%M'),
                             payment_system, status, amount
                         ))
