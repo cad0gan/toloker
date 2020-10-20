@@ -2,8 +2,9 @@ import pytz
 import asyncio
 import argparse
 from decimal import Decimal
-from tzlocal import get_localzone
 from datetime import datetime
+from tzlocal import get_localzone
+from termcolor import colored
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError
 from app import Window
@@ -51,9 +52,7 @@ if __name__ == '__main__':
                         string: str = str()
                         requester: str = task['requesterInfo']['name']['EN']  # requester
                         title: str = task['title']
-                        string += f'\033[1m{requester}\033[0m. '
-                        string += title
-                        print(string)
+                        print('{}. {}'.format(colored(requester, attrs=['bold']), title))
             except HttpError:
                 exit(1)
     elif args.subparser == 'worker':
@@ -62,8 +61,8 @@ if __name__ == '__main__':
             if login(toloka):
                 worker = asyncio.run(toloka.get_worker())
                 print('Balance: {} / {}'.format(
-                    '\33[90m' + '%.2f' % worker['blockedBalance'] + ' $' + '\033[0m',
-                    '\33[32m' + '%.2f' % worker['balance'] + ' $' + '\033[0m'
+                    colored('{:.2f} $'.format(worker['blockedBalance']), 'grey'),
+                    colored('{:.2f} $'.format(worker['balance']), 'green'),
                 ))
                 print('Rating: {}'.format(worker['rating']))
         except HttpError:
@@ -76,19 +75,21 @@ if __name__ == '__main__':
                     max_count: int = args.n if args.n is not None and args.n > 0 else 0
                     skills: list = asyncio.run(toloka.get_skills(max_count))
                     for skill in skills:
-                        string: str = str()
                         requester: str = skill['requesterName']['EN']
                         skill_name: str = skill['skillName']
                         value: int = skill['value']
+
+                        string: str = str()
                         string += f'\033[1m{requester}\033[0m. '
-                        string += f'{skill_name}: '
+                        string = '{}. {}'.format(colored(requester, attrs=['bold']), skill_name)
+                        color: string = 'white'
                         if value <= 25:
-                            string += '\33[31m'  # red
+                            color = 'red'
                         elif value <= 75:
-                            string += '\33[33m'  # yellow
+                            color = 'yellow'
                         elif value <= 100:
-                            string += '\33[32m'  # green
-                        string += f'{value}\33[0m'
+                            color = 'green'
+                        string += ': {}'.format(colored(str(value), color))
                         print(string)
             except HttpError:
                 exit(1)
