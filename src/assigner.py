@@ -26,8 +26,8 @@ class Assigner:
             self._pause = False
 
     async def __call__(self, *args, **kwargs) -> None:
-        count = 0
-        errors = 0
+        count: int = 0
+        errors: int = 0
         while True:
             if self._exit:
                 break
@@ -36,7 +36,7 @@ class Assigner:
                 continue
 
             try:
-                toloka_tasks = await self._toloka.get_tasks()
+                toloka_tasks: list = await self._toloka.get_tasks()
                 print('Requests: {}|{}. Total tasks: {}.'.format(
                     colored(str(count + 1), 'green'), colored(str(errors), 'red'),
                     len(toloka_tasks)
@@ -44,18 +44,18 @@ class Assigner:
                 sys.stdout.write('\033[F')
                 sys.stdout.write('\033[K')
                 for task in toloka_tasks:
-                    title = task['title']
+                    title: str = task['title']
 
                     if task['projectMetaInfo'].get('bookmarked'):
                         # if task['pools'][0].get('activeAssignments'):
                         #     print('Active task: {}'.format(title))
                         if not task['pools'][0].get('activeAssignments'):
-                            pool_id = task['pools'][0]['id']
-                            ref_uuid = task['refUuid']
+                            pool_id: int = task['pools'][0]['id']
+                            ref_uuid: str = task['refUuid']
 
                             print(f'Activating the task: {title}')
-                            result = await self._toloka.assign_task(pool_id, ref_uuid)
-                            code = result.get('code')
+                            result: dict = await self._toloka.assign_task(pool_id, ref_uuid)
+                            code: str = result.get('code')
                             if code and code == 'CSRF_EXCEPTION':
                                 result = await self._toloka.assign_task(pool_id, ref_uuid)
                                 code = result.get('code')
