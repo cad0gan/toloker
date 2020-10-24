@@ -9,10 +9,10 @@ from termcolor import colored
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError, AccessDeniedError
 from app import Window
+from version import VERSION
 from assigner import Assigner
 from shortcuts import login
 
-VERSION = '0.11.1'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
