@@ -64,7 +64,10 @@ if __name__ == '__main__':
             toloka: Toloka = Toloka()
             if login(toloka):
                 worker: dict = asyncio.run(toloka.get_worker())
+                login: str = worker['login']
                 ban: bool = worker['systemBan']
+
+                print('Login:', login)
                 color: str = 'red' if ban else 'white'
                 print('Ban: {}'.format(colored(str(ban).lower(), color)))
                 print('Balance: {} / {}'.format(
