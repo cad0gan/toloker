@@ -7,7 +7,7 @@ from datetime import datetime
 from tzlocal import get_localzone
 from termcolor import colored
 from pytoloka import Toloka
-from pytoloka.exceptions import HttpError
+from pytoloka.exceptions import HttpError, AccessDeniedError
 from app import Window
 from assigner import Assigner
 from shortcuts import login
@@ -55,6 +55,9 @@ if __name__ == '__main__':
                         title: str = task['title']
                         print('{}. {}'.format(colored(requester, attrs=['bold']), title))
             except HttpError:
+                exit(1)
+            except AccessDeniedError:
+                print('Access denied')
                 exit(1)
     elif args.subparser == 'worker':
         try:
