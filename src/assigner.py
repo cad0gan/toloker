@@ -21,6 +21,8 @@ class Assigner:
     def pause(self) -> None:
         if self._pause == 0:
             print('Pausing...')
+            sys.stdout.write('\033[F')
+            sys.stdout.write('\033[K')
             self._pause = 1
         elif self._pause == 2:
             print('Unpause')
@@ -29,6 +31,8 @@ class Assigner:
     async def __call__(self, user_input: Callable[[str], []], *args, **kwargs) -> None:
         requests: int = 0
         errors: int = 0
+        activated_tasks: int = 0
+        activated_errors: int = 0
         while True:
             if self._exit:
                 break
@@ -37,12 +41,6 @@ class Assigner:
                 continue
             try:
                 toloka_tasks: list = await self._toloka.get_tasks()
-                print('Requests: {}|{}. Total tasks: {}.'.format(
-                    colored(str(requests + 1), 'green'), colored(str(errors), 'red'),
-                    len(toloka_tasks)
-                ))
-                sys.stdout.write('\033[F')
-                sys.stdout.write('\033[K')
                 for task in toloka_tasks:
                     title: str = task['title']
                     if task['projectMetaInfo'].get('bookmarked'):
@@ -74,13 +72,22 @@ class Assigner:
                             if not code:
                                 print(f'A task is activated: {title}')
                                 Notify()(subtitle='The task is activated', message=title)
+                                activated_tasks += 1
                             else:
                                 message = result.get('message')
                                 print(f'Can\'t activate a task: {title}. {message}.')
+                                activated_errors += 1
+                requests += 1
+                print('Requests: {}|{}. Activated tasks: {}|{}. Total tasks: {}.'.format(
+                    colored(str(requests), 'green'), colored(str(errors), 'red'),
+                    colored(str(activated_tasks), 'green'), colored(str(activated_errors), 'red'),
+                    len(toloka_tasks)
+                ))
+                sys.stdout.write('\033[F')
+                sys.stdout.write('\033[K')
                 if self._pause == 1:
                     print('Pause')
                     self._pause = 2
-                requests += 1
             except HttpError:
                 errors += 1
                 await asyncio.sleep(1)
