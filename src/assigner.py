@@ -27,7 +27,7 @@ class Assigner:
             self._pause = False
 
     async def __call__(self, user_input: Callable[[str], []], *args, **kwargs) -> None:
-        count: int = 0
+        requests: int = 0
         errors: int = 0
         while True:
             if self._exit:
@@ -38,7 +38,7 @@ class Assigner:
             try:
                 toloka_tasks: list = await self._toloka.get_tasks()
                 print('Requests: {}|{}. Total tasks: {}.'.format(
-                    colored(str(count + 1), 'green'), colored(str(errors), 'red'),
+                    colored(str(requests + 1), 'green'), colored(str(errors), 'red'),
                     len(toloka_tasks)
                 ))
                 sys.stdout.write('\033[F')
@@ -80,7 +80,7 @@ class Assigner:
                 if self._pause == 1:
                     print('Pause')
                     self._pause = 2
-                count += 1
+                requests += 1
             except HttpError:
                 errors += 1
                 await asyncio.sleep(1)
