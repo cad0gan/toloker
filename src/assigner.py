@@ -1,5 +1,6 @@
 import sys
 import asyncio
+from collections.abc import Callable
 from termcolor import colored
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError, AccessDeniedError
@@ -25,7 +26,7 @@ class Assigner:
             print('Unpause')
             self._pause = False
 
-    async def __call__(self, *args, **kwargs) -> None:
+    async def __call__(self, user_input: Callable[[str], []], *args, **kwargs) -> None:
         count: int = 0
         errors: int = 0
         while True:
@@ -34,7 +35,6 @@ class Assigner:
             if self._pause == 2:
                 await asyncio.sleep(1)
                 continue
-
             try:
                 toloka_tasks: list = await self._toloka.get_tasks()
                 print('Requests: {}|{}. Total tasks: {}.'.format(
@@ -45,7 +45,6 @@ class Assigner:
                 sys.stdout.write('\033[K')
                 for task in toloka_tasks:
                     title: str = task['title']
-
                     if task['projectMetaInfo'].get('bookmarked'):
                         # if task['pools'][0].get('activeAssignments'):
                         #     print('Active task: {}'.format(title))
@@ -55,10 +54,23 @@ class Assigner:
 
                             print(f'Activating the task: {title}')
                             result: dict = await self._toloka.assign_task(pool_id, ref_uuid)
-                            code: str = result.get('code')
-                            if code and code == 'CSRF_EXCEPTION':
+                            code: str = result.get('code', str())
+                            if code == 'CSRF_EXCEPTION':
                                 result = await self._toloka.assign_task(pool_id, ref_uuid)
-                                code = result.get('code')
+                                code = result.get('code', str())
+                            if code == 'CAPTCHA_REQUIRED':
+                                payload: dict = result['payload']
+                                key: str = payload['key']
+                                url: str = payload['url']
+
+                                print('Captcha URL:', url)
+                                Notify()(subtitle='Waiting user input', message=title)
+                                captcha: str = user_input('Input captcha:')
+                                if captcha:
+                                    json: dict = await self._toloka.pass_captcha(key, captcha)
+                                    if json.get('success', False):
+                                        result = await self._toloka.assign_task(pool_id, ref_uuid)
+                                        code = result.get('code', str())
                             if not code:
                                 print(f'A task is activated: {title}')
                                 Notify()(subtitle='The task is activated', message=title)
