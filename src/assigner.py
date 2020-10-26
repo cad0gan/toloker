@@ -53,9 +53,11 @@ class Assigner:
                             print(f'Activating the task: {title}')
                             result: dict = await self._toloka.assign_task(pool_id, ref_uuid)
                             code: str = result.get('code', str())
+                            error_message: str = result.get('message', str())
                             if code == 'CSRF_EXCEPTION':
                                 result = await self._toloka.assign_task(pool_id, ref_uuid)
                                 code = result.get('code', str())
+                                error_message = result.get('message', str())
                             if code == 'CAPTCHA_REQUIRED':
                                 payload: dict = result['payload']
                                 key: str = payload['key']
@@ -69,13 +71,18 @@ class Assigner:
                                     if json.get('success', False):
                                         result = await self._toloka.assign_task(pool_id, ref_uuid)
                                         code = result.get('code', str())
+                                        error_message = result.get('message', str())
+                                    else:
+                                        error_message = 'Incorrect captcha'
                             if not code:
                                 print(f'A task is activated: {title}')
                                 Notify()(subtitle='The task is activated', message=title)
                                 activated_tasks += 1
                             else:
-                                message = result.get('message')
-                                print(f'Can\'t activate a task: {title}. {message}.')
+                                string: str = f'Can\'t activate a task: {title}.'
+                                if error_message:
+                                    string += f' {error_message}.'
+                                print(string)
                                 activated_errors += 1
                 requests += 1
                 print('Requests: {}|{}. Activated tasks: {}|{}. Total tasks: {}.'.format(
