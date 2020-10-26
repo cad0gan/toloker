@@ -68,8 +68,8 @@ if __name__ == '__main__':
                 ban: bool = worker['systemBan']
 
                 print('Login:', login)
-                color: str = 'red' if ban else 'white'
-                print('Ban: {}'.format(colored(str(ban).lower(), color)))
+                string: str = colored(str(ban).lower(), 'red') if ban else str(ban).lower()
+                print(f'Ban: {string}')
                 print('Balance: {} / {}'.format(
                     colored('{:.2f} $'.format(worker['blockedBalance']), 'grey'),
                     colored('{:.2f} $'.format(worker['balance']), 'green'),
