@@ -79,9 +79,9 @@ class Assigner:
                                 Notify()(subtitle='The task is activated', message=title)
                                 activated_tasks += 1
                             else:
-                                string: str = f'Can\'t activate a task: {title}.'
+                                string: str = f'Can\'t activate a task: {title}'
                                 if error_message:
-                                    string += f' {error_message}.'
+                                    string += f'. {error_message}.'
                                 print(string)
                                 activated_errors += 1
                 requests += 1
