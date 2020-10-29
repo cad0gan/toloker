@@ -2,7 +2,6 @@ import time
 import curses
 import signal
 import asyncio
-import contextlib
 from threading import Thread
 from app.input import Input
 from app.stdout import StdOut
