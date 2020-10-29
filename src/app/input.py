@@ -6,7 +6,7 @@ from typing import Union
 
 
 class Input:
-    def __init__(self, screen: any):
+    def __init__(self, screen: any) -> None:
         self._screen = screen
         curses.curs_set(1)
         self._screen.keypad(True)
@@ -14,7 +14,7 @@ class Input:
         self._x, self._y = curses.getsyx()
         self._x_input: int = 0
 
-    def _insert(self, wch: str):
+    def _insert(self, wch: str) -> None:
         result: list = list(self._result)
         result.insert(self._x_input, wch)
         self._result = ''.join(result)
@@ -58,7 +58,7 @@ class Input:
             await asyncio.sleep(0.05)
         return self._result
 
-    def __del__(self):
+    def __del__(self) -> None:
         self._screen.keypad(False)
         curses.curs_set(0)
         curses.flushinp()
