@@ -54,11 +54,10 @@ class Assigner:
                             print(f'Activating the task: {title}')
                             result: dict = await self._toloka.assign_task(pool_id, ref_uuid)
                             code: str = result.get('code', str())
-                            error_message: str = result.get('message', str())
+                            error_message: str = str()
                             if code == 'CSRF_EXCEPTION':
                                 result = await self._toloka.assign_task(pool_id, ref_uuid)
                                 code = result.get('code', str())
-                                error_message = result.get('message', str())
                             if code == 'CAPTCHA_REQUIRED':
                                 payload: dict = result['payload']
                                 key: str = payload['key']
@@ -66,20 +65,27 @@ class Assigner:
 
                                 print('Captcha URL:', url)
                                 Notify()(subtitle='Waiting user input', message=title)
-                                captcha: str = await user_input('Input captcha:')
-                                if captcha:
-                                    json: dict = await self._toloka.pass_captcha(key, captcha)
-                                    if json.get('success', False):
-                                        result = await self._toloka.assign_task(pool_id, ref_uuid)
-                                        code = result.get('code', str())
-                                        error_message = result.get('message', str())
-                                    else:
-                                        error_message = 'Incorrect captcha'
+                                try:
+                                    captcha: str = await asyncio.wait_for(
+                                        user_input('Input captcha:'), result.get('timeoutSeconds', 0)
+                                    )
+                                    if captcha:
+                                        json: dict = await self._toloka.pass_captcha(key, captcha)
+                                        if json.get('success', False):
+                                            result = await self._toloka.assign_task(pool_id, ref_uuid)
+                                            code = result.get('code', str())
+                                        else:
+                                            error_message = 'Incorrect captcha'
+                                except asyncio.TimeoutError:
+                                    error_message = 'Timeout of input captcha'
                             if not code:
                                 print(f'A task is activated: {title}')
                                 Notify()(subtitle='The task is activated', message=title)
                                 activated_tasks += 1
                             else:
+                                if not error_message:
+                                    error_message = result.get('message', str())
+
                                 string: str = f'Can\'t activate a task: {title}'
                                 if error_message:
                                     string += f'. {error_message}.'
