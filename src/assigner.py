@@ -1,6 +1,7 @@
 import sys
 import asyncio
-from collections.abc import Callable
+from typing import Coroutine
+from collections.abc import Callable, Awaitable
 from termcolor import colored
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError, AccessDeniedError
@@ -28,7 +29,7 @@ class Assigner:
             print('Unpause')
             self._pause = False
 
-    async def __call__(self, user_input: Callable[[str], []], *args, **kwargs) -> None:
+    async def __call__(self, user_input: Callable[[str], [Awaitable]], *args, **kwargs) -> None:
         requests: int = 0
         errors: int = 0
         activated_tasks: int = 0
@@ -65,7 +66,7 @@ class Assigner:
 
                                 print('Captcha URL:', url)
                                 Notify()(subtitle='Waiting user input', message=title)
-                                captcha: str = user_input('Input captcha:')
+                                captcha: str = await user_input('Input captcha:')
                                 if captcha:
                                     json: dict = await self._toloka.pass_captcha(key, captcha)
                                     if json.get('success', False):
