@@ -60,15 +60,14 @@ class Assigner:
                                 code = result.get('code', str())
                             if code == 'CAPTCHA_REQUIRED':
                                 payload: dict = result['payload']
-                                key: str = payload['key']
                                 url: str = payload['url']
 
                                 print('Captcha URL:', url)
                                 Notify()(subtitle='Waiting user input', message=title)
                                 try:
-                                    captcha: str = await asyncio.wait_for(
-                                        user_input('Input captcha:'), result.get('timeoutSeconds', 0)
-                                    )
+                                    key: str = payload['key']
+                                    timeout: int = payload['timeoutSeconds']
+                                    captcha: str = await asyncio.wait_for(user_input('Input captcha:'), timeout)
                                     if captcha:
                                         json: dict = await self._toloka.pass_captcha(key, captcha)
                                         if json.get('success', False):
