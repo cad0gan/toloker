@@ -14,10 +14,19 @@ class Input:
         self._x, self._y = curses.getsyx()
         self._x_input: int = 0
 
+    def _remove(self) -> None:
+        with contextlib.suppress(IndexError):
+            if self._x_input:
+                result: list = list(self._result)
+                result.pop(self._x_input - 1)
+                self._result = ''.join(result)
+                self._x_input -= 1
+
     def _insert(self, wch: str) -> None:
         result: list = list(self._result)
         result.insert(self._x_input, wch)
         self._result = ''.join(result)
+        self._x_input += 1
 
     async def __call__(self, text: str) -> str:
         self._screen.addstr(self._y, self._x, text)
@@ -31,19 +40,19 @@ class Input:
                     if wch == '\n':
                         sys.stdout.write('\r\n')
                         break
-                    if self._x_input == length:
-                        self._result += wch
-                        self._x_input += len(wch)
+                    elif wch == '':
+                        self._remove()
                     else:
-                        self._insert(wch)
-                        x = curses.getsyx()[1]
+                        if self._x_input == length:
+                            self._result += wch
+                            self._x_input += len(wch)
+                        else:
+                            self._insert(wch)
 
                     self._screen.move(self._y, self._x)
                     self._screen.clrtoeol()
                     self._screen.addstr(self._y, self._x, self._result)  # moved cursor
-                    if x:
-                        self._x_input += 1
-                        self._screen.move(self._y, x + 1)
+                    self._screen.move(self._y, self._x + self._x_input)
                 else:
                     if length:
                         if wch == curses.KEY_LEFT:
