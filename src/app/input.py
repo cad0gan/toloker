@@ -14,6 +14,10 @@ class Input:
         self._x, self._y = curses.getsyx()
         self._x_input: int = 0
 
+    def _add(self, wch: str) -> None:
+        self._result += wch
+        self._x_input += len(wch)
+
     def _remove(self) -> None:
         with contextlib.suppress(IndexError):
             if self._x_input:
@@ -43,8 +47,7 @@ class Input:
                         self._remove()
                     else:
                         if self._x_input == length:
-                            self._result += wch
-                            self._x_input += len(wch)
+                            self._add(wch)
                         else:
                             self._insert(wch)
 
