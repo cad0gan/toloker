@@ -36,7 +36,6 @@ class Input:
                 length: int = len(self._result)
                 wch: Union[str, int] = self._screen.get_wch()
                 if isinstance(wch, str):
-                    x: int = 0
                     if wch == '\n':
                         sys.stdout.write('\r\n')
                         break
