@@ -53,7 +53,7 @@ class Input:
 
                     self._screen.move(self._y, self._x)
                     self._screen.clrtoeol()
-                    self._screen.addstr(self._y, self._x, self._result)  # moved cursor
+                    self._screen.addstr(self._y, self._x, self._result)  # it's moves the cursor
                     self._screen.move(self._y, self._x + self._x_input)
                 else:
                     if length:
