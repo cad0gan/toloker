@@ -32,6 +32,25 @@ class Input:
         self._result = ''.join(result)
         self._x_input += 1
 
+    def _delete(self) -> None:
+        with contextlib.suppress(IndexError):
+            length = len(self._result)
+            if self._x_input != length:
+                result: list = list(self._result)
+                result.pop(self._x_input)
+                self._result = ''.join(result)
+                if self._x_input > length:
+                    self._x_input = length
+
+    def _move(self) -> None:
+        self._screen.move(self._y, self._x + self._x_input)
+
+    def _draw(self) -> None:
+        self._screen.move(self._y, self._x)
+        self._screen.clrtoeol()
+        self._screen.addstr(self._y, self._x, self._result)  # it's moves the cursor
+        self._screen.move(self._y, self._x + self._x_input)
+
     async def __call__(self, text: str) -> str:
         self._screen.addstr(self._y, self._x, text)
         self._x += len(text)
@@ -50,26 +69,29 @@ class Input:
                             self._add(wch)
                         else:
                             self._insert(wch)
-
-                    self._screen.move(self._y, self._x)
-                    self._screen.clrtoeol()
-                    self._screen.addstr(self._y, self._x, self._result)  # it's moves the cursor
-                    self._screen.move(self._y, self._x + self._x_input)
+                    self._draw()
                 else:
                     if length:
                         if wch == curses.KEY_LEFT:
                             self._x_input -= 1
                             if self._x_input <= 0:
                                 self._x_input = 0
+                            self._move()
                         elif wch == curses.KEY_RIGHT:
                             self._x_input += 1
                             if self._x_input > length:
                                 self._x_input = length
+                            self._move()
                         elif wch == curses.KEY_HOME:
                             self._x_input = 0
+                            self._move()
                         elif wch == curses.KEY_END:
                             self._x_input = length
-                        self._screen.move(self._y, self._x + self._x_input)
+                            self._move()
+                        elif wch == curses.KEY_DC:
+                            self._delete()
+                            self._draw()
+
             await asyncio.sleep(0.05)
         return self._result
 
