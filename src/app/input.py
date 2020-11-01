@@ -65,6 +65,10 @@ class Input:
                             self._x_input += 1
                             if self._x_input > length:
                                 self._x_input = length
+                        elif wch == curses.KEY_HOME:
+                            self._x_input = 0
+                        elif wch == curses.KEY_END:
+                            self._x_input = length
                         self._screen.move(self._y, self._x + self._x_input)
             await asyncio.sleep(0.05)
         return self._result
