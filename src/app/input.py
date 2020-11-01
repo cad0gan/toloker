@@ -11,7 +11,8 @@ class Input:
         curses.curs_set(1)
         self._screen.keypad(True)
         self._result: str = str()
-        self._x, self._y = curses.getsyx()
+        self._x = 0
+        self._y = curses.getsyx()[1]
         self._x_input: int = 0
 
     def _add(self, wch: str) -> None:
@@ -60,16 +61,18 @@ class Input:
                 wch: Union[str, int] = self._screen.get_wch()
                 if isinstance(wch, str):
                     if wch == '\n':
-                        sys.stdout.write('\r\n')
+                        self._screen.move(self._y + 1, 0)
+                        self._screen.refresh()
                         break
                     elif wch == '':
                         self._remove()
+                        self._draw()
                     else:
                         if self._x_input == length:
                             self._add(wch)
                         else:
                             self._insert(wch)
-                    self._draw()
+                        self._draw()
                 else:
                     if length:
                         if wch == curses.KEY_LEFT:
@@ -91,7 +94,6 @@ class Input:
                         elif wch == curses.KEY_DC:
                             self._delete()
                             self._draw()
-
             await asyncio.sleep(0.05)
         return self._result
 
