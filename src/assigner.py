@@ -13,6 +13,16 @@ class Assigner:
         self._toloka: Toloka = toloka
         self._exit: bool = False
         self._pause: int = 0
+        self._stats: dict[str, int] = dict(requests=0, errors=0, activated_tasks=0, activated_errors=0)
+
+    def _print_stats(self, tasks: int):
+        print('Requests: {}|{}. Activated tasks: {}|{}. Total tasks: {}.'.format(
+            colored(str(self._stats['requests']), 'green'), colored(str(self._stats['errors']), 'red'),
+            colored(str(self._stats['activated_tasks']), 'green'), colored(str(self._stats['activated_errors']), 'red'),
+            tasks
+        ))
+        sys.stdout.write('\033[F')
+        sys.stdout.write('\033[K')
 
     def exit(self) -> None:
         if not self._exit:
@@ -30,10 +40,6 @@ class Assigner:
             self._pause = False
 
     async def __call__(self, user_input: Callable[[str], [Awaitable]], *args, **kwargs) -> None:
-        requests: int = 0
-        errors: int = 0
-        activated_tasks: int = 0
-        activated_errors: int = 0
         while True:
             if self._exit:
                 break
@@ -80,7 +86,7 @@ class Assigner:
                             if not code:
                                 print(f'A task is activated: {title}')
                                 Notify()(subtitle='The task is activated', message=title)
-                                activated_tasks += 1
+                                self._stats['activated_tasks'] += 1
                             else:
                                 if not error_message:
                                     error_message = result.get('message', str())
@@ -89,20 +95,15 @@ class Assigner:
                                 if error_message:
                                     string += f'. {error_message}.'
                                 print(string)
-                                activated_errors += 1
-                requests += 1
-                print('Requests: {}|{}. Activated tasks: {}|{}. Total tasks: {}.'.format(
-                    colored(str(requests), 'green'), colored(str(errors), 'red'),
-                    colored(str(activated_tasks), 'green'), colored(str(activated_errors), 'red'),
-                    len(toloka_tasks)
-                ))
-                sys.stdout.write('\033[F')
-                sys.stdout.write('\033[K')
+                                self._stats['activated_errors'] += 1
+                self._stats['requests'] += 1
+                self._print_stats(len(toloka_tasks))
                 if self._pause == 1:
                     print('Pause')
                     self._pause = 2
+                    self._print_stats(len(toloka_tasks))
             except HttpError:
-                errors += 1
+                self._stats['errors'] += 1
                 await asyncio.sleep(1)
             except AccessDeniedError:
                 print(colored('Access denied', 'red'))
