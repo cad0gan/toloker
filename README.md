@@ -2,7 +2,7 @@
 The command line interface for Yandex Toloka.
 
 ## Install
-    git clone git@github.com:cad0gan/toloker.git
+    git clone https://github.com/cad0gan/toloker.git
     cd toloker
     git submodule update --init
     pip install -r pytoloka/requirements.txt
