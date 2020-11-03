@@ -61,8 +61,6 @@ class Input:
                 wch: Union[str, int] = self._screen.get_wch()
                 if isinstance(wch, str):
                     if wch == '\n':
-                        self._screen.move(self._y + 1, 0)
-                        self._screen.refresh()
                         break
                     elif wch == '':
                         self._remove()
@@ -98,6 +96,8 @@ class Input:
         return self._result
 
     def __del__(self) -> None:
+        self._screen.move(self._y + 1, 0)
+        self._screen.refresh()
         self._screen.keypad(False)
         curses.curs_set(0)
         curses.flushinp()
