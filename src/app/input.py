@@ -51,7 +51,7 @@ class Input:
     def _draw(self) -> None:
         self._screen.move(self._y, self._x)
         self._screen.clrtoeol()
-        self._screen.addstr(self._y, self._x, self._result)  # it's moves the cursor
+        self._screen.addstr(self._y, self._x, self._result)  # it moves the cursor
         self._screen.move(self._y, self._x + self._x_input)
 
     async def __call__(self, text: str) -> str:
