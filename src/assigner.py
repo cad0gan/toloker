@@ -1,7 +1,7 @@
 import sys
 import asyncio
 from typing import Union
-from termcolor import colored
+from termcolor import colored, cprint
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError, AccessDeniedError
 from notify import Notify
@@ -122,7 +122,7 @@ class Assigner:
                 self._stats['errors'] += 1
                 await asyncio.sleep(1)
             except AccessDeniedError:
-                print(colored('Access denied', 'red'))
+                cprint('Access denied', 'red')
                 for i in range(60):
                     if self._exit:
                         break
