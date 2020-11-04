@@ -2,10 +2,6 @@
 The command line interface for Yandex Toloka.
 
 ## Install
-    git clone https://github.com/cad0gan/toloker.git
-    cd toloker
-    git submodule update --init
-    pip install -r pytoloka/requirements.txt
     pip install -r requirements.txt
     mkdir -p ~/.config/toloker/
     cp config_sample.yml ~/.config/toloker/config.yml
