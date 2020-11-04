@@ -14,7 +14,7 @@ class Input:
         self._screen.keypad(True)
         self._result: str = str()
         self._x = 0
-        self._y = curses.getsyx()[1]
+        self._y = curses.getsyx()[0]
         self._x_input: int = 0
 
     def _add(self, wch: str) -> None:
