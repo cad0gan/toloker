@@ -48,54 +48,58 @@ class Assigner:
                 continue
             try:
                 toloka_tasks: list = await self._toloka.get_tasks()
-                for task in toloka_tasks:
-                    title: str = task['title']
-                    if task['projectMetaInfo'].get('bookmarked'):
-                        # if task['pools'][0].get('activeAssignments'):
-                        #     print('Active task: {}'.format(title))
-                        if not task['pools'][0].get('activeAssignments'):
-                            pool_id: int = task['pools'][0]['id']
-                            ref_uuid: str = task['refUuid']
+                if toloka_tasks:
+                    favorite_tasks: list = list(filter(
+                        lambda t: t['projectMetaInfo'].get('bookmarked', False), toloka_tasks
+                    ))
+                    for task in favorite_tasks:
+                        title: str = task['title']
+                        if task['projectMetaInfo'].get('bookmarked'):
+                            # if task['pools'][0].get('activeAssignments'):
+                            #     print('Active task: {}'.format(title))
+                            if not task['pools'][0].get('activeAssignments'):
+                                pool_id: int = task['pools'][0]['id']
+                                ref_uuid: str = task['refUuid']
 
-                            print(f'Activating the task: {title}')
-                            result: dict = await self._toloka.assign_task(pool_id, ref_uuid)
-                            code: str = result.get('code', str())
-                            error_message: str = str()
-                            if code == 'CSRF_EXCEPTION':
-                                result = await self._toloka.assign_task(pool_id, ref_uuid)
-                                code = result.get('code', str())
-                            if code == 'CAPTCHA_REQUIRED':
-                                payload: dict = result['payload']
-                                url: str = payload['url']
+                                print(f'Activating the task: {title}')
+                                result: dict = await self._toloka.assign_task(pool_id, ref_uuid)
+                                code: str = result.get('code', str())
+                                error_message: str = str()
+                                if code == 'CSRF_EXCEPTION':
+                                    result = await self._toloka.assign_task(pool_id, ref_uuid)
+                                    code = result.get('code', str())
+                                if code == 'CAPTCHA_REQUIRED':
+                                    payload: dict = result['payload']
+                                    url: str = payload['url']
 
-                                print('Captcha URL:', url)
-                                Notify()(subtitle='Waiting user input', message=title)
-                                try:
-                                    key: str = payload['key']
-                                    timeout: int = payload['timeoutSeconds']
-                                    captcha: str = await asyncio.wait_for(user_input('Input captcha:'), timeout)
-                                    if captcha:
-                                        json: dict = await self._toloka.pass_captcha(key, captcha)
-                                        if json.get('success', False):
-                                            result = await self._toloka.assign_task(pool_id, ref_uuid)
-                                            code = result.get('code', str())
-                                        else:
-                                            error_message = 'Incorrect captcha'
-                                except asyncio.TimeoutError:
-                                    error_message = 'Timeout of input captcha'
-                            if not code:
-                                print(f'A task is activated: {title}')
-                                Notify()(subtitle='The task is activated', message=title)
-                                self._stats['activated_tasks'] += 1
-                            else:
-                                if not error_message:
-                                    error_message = result.get('message', str())
+                                    print('Captcha URL:', url)
+                                    Notify()(subtitle='Waiting user input', message=title)
+                                    try:
+                                        key: str = payload['key']
+                                        timeout: int = payload['timeoutSeconds']
+                                        captcha: str = await asyncio.wait_for(user_input('Input captcha:'), timeout)
+                                        if captcha:
+                                            json: dict = await self._toloka.pass_captcha(key, captcha)
+                                            if json.get('success', False):
+                                                result = await self._toloka.assign_task(pool_id, ref_uuid)
+                                                code = result.get('code', str())
+                                            else:
+                                                error_message = 'Incorrect captcha'
+                                    except asyncio.TimeoutError:
+                                        error_message = 'Timeout of input captcha'
+                                if not code:
+                                    print(f'A task is activated: {title}')
+                                    Notify()(subtitle='The task is activated', message=title)
+                                    self._stats['activated_tasks'] += 1
+                                else:
+                                    if not error_message:
+                                        error_message = result.get('message', str())
 
-                                string: str = f'Can\'t activate a task: {title}'
-                                if error_message:
-                                    string += f'. {error_message}.'
-                                print(string)
-                                self._stats['activated_errors'] += 1
+                                    string: str = f'Can\'t activate a task: {title}'
+                                    if error_message:
+                                        string += f'. {error_message}.'
+                                    print(string)
+                                    self._stats['activated_errors'] += 1
                 self._stats['requests'] += 1
                 self._print_stats(len(toloka_tasks))
                 if self._pause == 1:
