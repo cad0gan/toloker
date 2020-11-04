@@ -11,6 +11,7 @@ from telegram_bot import TelegramBot
 class Window:
     def __init__(self, worker: any) -> None:
         self._worker: any = worker
+        self._worker.input = self.input
         self._screen: any = None
         self._stdout: StdOut = StdOut()
         self._thread: Thread = Thread(target=self._handle_keypress)
@@ -52,7 +53,7 @@ class Window:
         self._thread.start()
 
         async def run():
-            await asyncio.gather(self._worker(self.input), self._telegram_bot())
+            await asyncio.gather(self._worker(), self._telegram_bot())
         asyncio.run(run())
 
     def __del__(self) -> None:

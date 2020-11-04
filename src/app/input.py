@@ -1,8 +1,10 @@
-import sys
 import curses
 import asyncio
 import contextlib
-from typing import Union
+from typing import Union, Callable, Awaitable
+
+
+InputCallback = Callable[[str], Awaitable]
 
 
 class Input:
