@@ -20,8 +20,11 @@ class Window:
 
     async def input(self, text: str) -> str:
         self._input = True
-        result: str = await Input(self._screen)(text)
-        self._input = False
+        _input = Input(self._screen)
+        try:
+            result: str = await _input(text)
+        finally:
+            self._input = False
         return result
 
     def _handle_keypress(self) -> None:
