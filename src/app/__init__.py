@@ -1,1 +1,1 @@
-from app.window import Window
+from app.window import WindowAssigner

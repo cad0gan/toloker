@@ -8,7 +8,7 @@ from tzlocal import get_localzone
 from termcolor import colored
 from pytoloka import Toloka
 from pytoloka.exceptions import HttpError, AccessDeniedError
-from app import Window
+from app import WindowAssigner
 from version import VERSION
 from assigner import Assigner
 from shortcuts import login
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         try:
             toloka: Toloka = Toloka()
             if login(toloka):
-                Window(Assigner(toloka))()
+                WindowAssigner(Assigner(toloka))()
         except HttpError:
             exit(1)
     elif args.subparser == 'tasks':
