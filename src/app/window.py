@@ -37,6 +37,8 @@ class Window:
                     break
                 elif ch == ord('s'):
                     self._worker.pause()
+                elif ch == ord('t'):
+                    self._worker.print_stats()
             time.sleep(0.5)
 
     def __call__(self) -> None:

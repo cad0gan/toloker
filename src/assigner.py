@@ -14,7 +14,7 @@ class Assigner:
         self._input: Union[InputCallback, None] = None
         self._exit: bool = False
         self._pause: int = 0
-        self._stats: dict[str, int] = dict(requests=0, errors=0, activated_tasks=0, activated_errors=0)
+        self._stats: dict[str, int] = dict(requests=0, errors=0, activated_tasks=0, activated_errors=0, tasks=0)
 
     @property
     def input(self) -> Union[InputCallback, None]:
@@ -39,14 +39,12 @@ class Assigner:
             print('Unpause')
             self._pause = False
 
-    def _print_stats(self, tasks: int):
+    def print_stats(self):
         print('Requests: {}|{}. Activated tasks: {}|{}. Total tasks: {}.'.format(
             colored(str(self._stats['requests']), 'green'), colored(str(self._stats['errors']), 'red'),
             colored(str(self._stats['activated_tasks']), 'green'), colored(str(self._stats['activated_errors']), 'red'),
-            tasks
+            self._stats['tasks']
         ))
-        sys.stdout.write('\033[F')
-        sys.stdout.write('\033[K')
 
     async def _assign_task(self, task: dict) -> None:
         title: str = task['title']
@@ -106,6 +104,7 @@ class Assigner:
                 continue
             try:
                 toloka_tasks: list = await self._toloka.get_tasks()
+                self._stats['tasks'] = len(toloka_tasks)
                 if toloka_tasks:
                     favorite_tasks: list = list(filter(
                         lambda t: t['projectMetaInfo'].get('bookmarked', False), toloka_tasks
@@ -113,11 +112,9 @@ class Assigner:
                     for task in favorite_tasks:
                         await self._assign_task(task)
                 self._stats['requests'] += 1
-                self._print_stats(len(toloka_tasks))
                 if self._pause == 1:
                     print('Pause')
                     self._pause = 2
-                    self._print_stats(len(toloka_tasks))
             except HttpError:
                 self._stats['errors'] += 1
                 await asyncio.sleep(1)
