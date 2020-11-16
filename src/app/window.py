@@ -19,7 +19,7 @@ class Window:
         self._thread: Thread = Thread(target=self._handle_keypress)
         self._input: bool = False
 
-    async def _run(self):
+    async def _run(self) -> NoReturn:
         raise NotImplementedError('._run() must be overridden.')
 
     def _handle_keypress(self) -> NoReturn:
@@ -64,7 +64,7 @@ class WindowAssigner(Window):
         super(WindowAssigner, self).__init__(worker)
         self._telegram_bot: TelegramBot = TelegramBot()
 
-    async def _run(self):
+    async def _run(self) -> None:
         await asyncio.gather(self._worker(), self._telegram_bot())
 
     def _handle_keypress(self) -> None:
