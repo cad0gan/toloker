@@ -2,6 +2,7 @@ import time
 import curses
 import signal
 import asyncio
+import contextlib
 from typing import NoReturn
 from threading import Thread
 from assigner import Assigner
@@ -43,21 +44,20 @@ class Window:
         curses.cbreak()
         curses.noecho()
         curses.curs_set(False)
-        try:
+        with contextlib.suppress(curses.error):
             curses.start_color()
             curses.use_default_colors()
-        except curses.error:
-            pass
         self._window.clear()
         self._window_input.nodelay(True)
         self._stdout.set()
         signal.signal(signal.SIGINT, lambda signum, frame: None)
         self._thread.start()
         asyncio.run(self._run())
+        self._thread.join()
 
     def __del__(self) -> None:
-        self._thread.join()
-        curses.endwin()
+        with contextlib.suppress(curses.error):
+            curses.endwin()
         self._stdout.unset()
 
 
