@@ -18,8 +18,9 @@ Automatic assign your favorite tasks:
     
     ./toloker assigner
 **Hotkeys**:
-* **q**: quit
-* **s**: stop/start
+* **`q`**: quit
+* **`s`**: stop/start
+* **`t`**: print stats
 ### Other
 Show all tasks:
 
