@@ -43,7 +43,7 @@ class Window:
         self._window_input = curses.newwin(1, 1)
         curses.cbreak()
         curses.noecho()
-        curses.curs_set(False)
+        curses.curs_set(0)
         with contextlib.suppress(curses.error):
             curses.start_color()
             curses.use_default_colors()
