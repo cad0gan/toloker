@@ -9,9 +9,9 @@ InputCallback = Callable[[str], Awaitable]
 
 class Input:
     def __init__(self, window: any) -> None:
-        self._screen = window
+        self._window = window
         curses.curs_set(1)
-        self._screen.keypad(True)
+        self._window.keypad(True)
         self._result: str = str()
         self._x = 0
         self._y = curses.getsyx()[0]
@@ -46,21 +46,21 @@ class Input:
                     self._x_input = length
 
     def _move(self) -> None:
-        self._screen.move(self._y, self._x + self._x_input)
+        self._window.move(self._y, self._x + self._x_input)
 
     def _draw(self) -> None:
-        self._screen.move(self._y, self._x)
-        self._screen.clrtoeol()
-        self._screen.addstr(self._y, self._x, self._result)  # it moves the cursor
-        self._screen.move(self._y, self._x + self._x_input)
+        self._window.move(self._y, self._x)
+        self._window.clrtoeol()
+        self._window.addstr(self._y, self._x, self._result)  # it moves the cursor
+        self._window.move(self._y, self._x + self._x_input)
 
     async def __call__(self, text: str) -> str:
-        self._screen.addstr(self._y, self._x, text)
+        self._window.addstr(self._y, self._x, text)
         self._x += len(text)
         while True:
             with contextlib.suppress(curses.error):
                 length: int = len(self._result)
-                wch: Union[str, int] = self._screen.get_wch()
+                wch: Union[str, int] = self._window.get_wch()
                 if isinstance(wch, str):
                     if wch == '\n':
                         break
@@ -98,8 +98,8 @@ class Input:
         return self._result
 
     def __del__(self) -> None:
-        self._screen.move(self._y + 1, 0)
-        self._screen.refresh()
-        self._screen.keypad(False)
+        self._window.move(self._y + 1, 0)
+        self._window.refresh()
+        self._window.keypad(False)
         curses.curs_set(0)
         curses.flushinp()
