@@ -49,16 +49,15 @@ class Window:
             curses.use_default_colors()
         self._window.clear()
         self._window_input.nodelay(True)
-        self._stdout.set()
         signal.signal(signal.SIGINT, lambda signum, frame: None)
-        self._thread.start()
-        asyncio.run(self._run())
-        self._thread.join()
+        with self._stdout:
+            self._thread.start()
+            asyncio.run(self._run())
+            self._thread.join()
 
     def __del__(self) -> None:
         with contextlib.suppress(curses.error):
             curses.endwin()
-        self._stdout.unset()
 
 
 class WindowAssigner(Window):
