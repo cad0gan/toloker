@@ -8,8 +8,8 @@ InputCallback = Callable[[str], Awaitable]
 
 
 class Input:
-    def __init__(self, screen: any) -> None:
-        self._screen = screen
+    def __init__(self, window: any) -> None:
+        self._screen = window
         curses.curs_set(1)
         self._screen.keypad(True)
         self._result: str = str()
