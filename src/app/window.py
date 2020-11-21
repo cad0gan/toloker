@@ -40,7 +40,7 @@ class Window:
 
     def __call__(self) -> None:
         self._window = curses.initscr()
-        self._window_input = curses.newwin(1, 1)
+        self._window_input = curses.newwin(*self._window.getmaxyx())
         curses.cbreak()
         curses.noecho()
         curses.curs_set(0)
