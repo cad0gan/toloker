@@ -14,7 +14,7 @@ class Window:
     def __init__(self, worker: any) -> None:
         self._worker: any = worker
         self._worker.input = self.input
-        self._screen: any = None
+        self._window: any = None
         self._stdout: StdOut = StdOut()
         self._thread: Thread = Thread(target=self._handle_keypress)
         self._input: bool = False
@@ -29,7 +29,7 @@ class Window:
 
     async def input(self, text: str) -> str:
         self._input = True
-        _input = Input(self._screen)
+        _input = Input(self._window)
         try:
             result: str = await _input(text)
         finally:
@@ -37,7 +37,7 @@ class Window:
         return result
 
     def __call__(self) -> None:
-        self._screen: any = curses.initscr()
+        self._window: any = curses.initscr()
         curses.cbreak()
         curses.noecho()
         curses.curs_set(False)
@@ -46,8 +46,8 @@ class Window:
             curses.use_default_colors()
         except curses.error:
             pass
-        self._screen.clear()
-        self._screen.nodelay(True)
+        self._window.clear()
+        self._window.nodelay(True)
         self._stdout.set()
         signal.signal(signal.SIGINT, lambda signum, frame: None)
         self._thread.start()
@@ -70,7 +70,7 @@ class WindowAssigner(Window):
     def _handle_keypress(self) -> None:
         while True:
             if not self._input:
-                ch: str = self._screen.getch()
+                ch: str = self._window.getch()
                 if ch == ord('q'):
                     self._worker.exit()
                     self._telegram_bot.exit()
